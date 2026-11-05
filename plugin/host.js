@@ -4,6 +4,7 @@ import { realpath, stat } from 'node:fs/promises'
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { pipeline } from 'node:stream/promises'
+import { exec } from 'node:child_process'
 
 export const name = 'deepseek-harness-kr'
 export const inject = ['webServer']
@@ -29,12 +30,29 @@ const types = { '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; char
 
 export function createAssetHandler(root = assets) {
   return async (req, res) => {
-    if (req.method !== 'GET' && req.method !== 'HEAD') {
-      res.writeHead(405, { Allow: 'GET, HEAD' }); res.end(); return
-    }
     try {
-      // Decode before resolving; both lexical traversal and symlink escapes fail closed.
       const path = decodeURIComponent((req.url || '').split('?')[0])
+
+      // 클라이언트에서 '여기' 또는 폴더 열기 클릭 시 실제 파일 탐색기로 assets/model/ 폴더 열기
+      if (path === ASSET_PATH + '/api/open-model-folder') {
+        const base = await realpath(root)
+        const modelDir = resolve(base, 'model')
+        if (process.platform === 'win32') {
+          exec(`explorer.exe "${modelDir}"`)
+        } else if (process.platform === 'darwin') {
+          exec(`open "${modelDir}"`)
+        } else {
+          exec(`xdg-open "${modelDir}"`)
+        }
+        res.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache' })
+        res.end(JSON.stringify({ ok: true, path: modelDir }))
+        return
+      }
+
+      if (req.method !== 'GET' && req.method !== 'HEAD') {
+        res.writeHead(405, { Allow: 'GET, HEAD, POST' }); res.end(); return
+      }
+      // Decode before resolving; both lexical traversal and symlink escapes fail closed.
       if (!path.startsWith(ASSET_PATH + '/')) { res.writeHead(404); res.end(); return }
       const suffix = path.slice(ASSET_PATH.length + 1)
       if (!suffix || suffix.includes('\\') || suffix.includes('\0')) { res.writeHead(404); res.end(); return }
