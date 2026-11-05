@@ -38,7 +38,10 @@ export function createAssetHandler(root = assets) {
         const base = await realpath(root)
         const modelDir = resolve(base, 'model')
         if (process.platform === 'win32') {
-          exec(`explorer.exe "${modelDir}"`)
+          const winPath = modelDir.replace(/\//g, '\\')
+          exec(`explorer.exe "${winPath}"`, (err) => {
+            if (err) console.error('[deepseek-harness-kr] explorer launch error:', err)
+          })
         } else if (process.platform === 'darwin') {
           exec(`open "${modelDir}"`)
         } else {
