@@ -51,3 +51,11 @@ html body[data-ds-dark-theme] #dsc-bubble.mutter {
   border-color: var(--dsc-mutter-line);
 }
 html body[data-ds-dark-theme] #dsc-bubble.mutter::after { border-color: var(--dsc-mutter-line); }
+
+/* 플러그인 상세 / 컴포넌트 상세 헤더에서 중복 노출되는 코드명(deepseek-harness-kr) 깔끔하게 숨김 */
+div[data-plugin-row-detail] p:has(code),
+div[data-plugin-detail] p:has(code[data-plugin-name]),
+div[data-plugin-row-detail] code,
+div[data-plugin-detail] code[data-plugin-name] {
+  display: none !important;
+}
