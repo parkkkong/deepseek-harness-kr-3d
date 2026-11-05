@@ -1,0 +1,15 @@
+# Node dependencies
+node_modules/
+
+# OS metadata
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 3D VRM Models (Excluded due to creator redistribution licensing & size)
+assets/model/*.vrm
+!assets/model/idle_loop.vrma
+
+# Backups & Temp files
+assets/model_live2d_backup/
+*.log
