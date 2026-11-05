@@ -1,6 +1,6 @@
 import z from '@deepseek-ai/schemastery'
 import { createReadStream } from 'node:fs'
-import { realpath, stat } from 'node:fs/promises'
+import { readdir, realpath, stat } from 'node:fs/promises'
 import { extname, isAbsolute, relative, resolve, sep } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { pipeline } from 'node:stream/promises'
@@ -49,6 +49,29 @@ export function createAssetHandler(root = assets) {
         }
         res.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache' })
         res.end(JSON.stringify({ ok: true, path: modelDir }))
+        return
+      }
+
+      // assets/model/ 폴더 안의 임의의 .vrm 파일 자동 탐색 API (파일명 상관없이 첫 번째 .vrm 감지)
+      if (path === ASSET_PATH + '/api/find-vrm') {
+        try {
+          const base = await realpath(root)
+          const modelDir = resolve(base, 'model')
+          const entries = await readdir(modelDir, { withFileTypes: true })
+          const vrms = entries.filter((e) => e.isFile() && e.name.toLowerCase().endsWith('.vrm'))
+          if (vrms.length > 0) {
+            // rachel_lawford.vrm 이 있으면 우선, 없으면 사용자가 다운받은 첫 번째 .vrm 선택
+            const chosen = vrms.find((e) => e.name.toLowerCase() === 'rachel_lawford.vrm') || vrms[0]
+            res.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache' })
+            res.end(JSON.stringify({ ok: true, file: 'model/' + chosen.name, name: chosen.name }))
+            return
+          }
+          res.writeHead(200, { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-cache' })
+          res.end(JSON.stringify({ ok: false, message: 'No .vrm file found' }))
+        } catch (err) {
+          res.writeHead(500, { 'content-type': 'application/json; charset=utf-8' })
+          res.end(JSON.stringify({ ok: false, error: String(err) }))
+        }
         return
       }
 

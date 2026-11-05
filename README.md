@@ -14,11 +14,11 @@
 
 1. **공식 모델 다운로드 링크**:  
    🔗 [Rachel Lawford on VRoid Hub (by kyame)](https://hub.vroid.com/en/characters/5813079808239232451/models/6001751550027080479)
-2. **저장 위치**:  
-   다운로드한 `.vrm` 파일의 이름을 `rachel_lawford.vrm`으로 지정하여 플러그인의 `assets/model/` 폴더에 넣습니다.  
+2. **저장 위치 (파일명 변경 불필요!)**:  
+   다운로드한 `.vrm` 파일(숫자나 긴 해시 이름이어도 무관)을 **파일명 그대로** 플러그인의 `assets/model/` 폴더에 넣습니다.  
    - Windows Desktop 프로필 기본 경로:  
-     `%USERPROFILE%\.dsh\profiles\desktop\node_modules\deepseek-harness-kr\assets\model\rachel_lawford.vrm`  
-   *(또는 `avatar.vrm`으로 저장해도 자동 인식됩니다)*
+     `%USERPROFILE%\.dsh\profiles\desktop\node_modules\deepseek-harness-kr\assets\model\`  
+   *(플러그인이 폴더 내의 `.vrm` 파일을 자동으로 감지하여 로드합니다)*
 3. 파일을 넣은 후 DeepSeek Harness를 새로고침(`Ctrl + R`)하면 3D 아바타가 즉시 로드됩니다.
 
 ---
