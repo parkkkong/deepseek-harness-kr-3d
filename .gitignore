@@ -1,5 +1,6 @@
 # Node dependencies
 node_modules/
+.pnpm-debug.log*
 
 # OS metadata
 .DS_Store
@@ -8,8 +9,23 @@ desktop.ini
 
 # 3D VRM Models (Excluded due to creator redistribution licensing & size)
 assets/model/*.vrm
+*.vrm
 !assets/model/idle_loop.vrma
 
-# Backups & Temp files
-assets/model_live2d_backup/
+# Internal Project & AI Session Handoff Documents (Private / Do Not Distribute)
+HERMES_ZENA_VRM_PORTING_GUIDE.md
+session_handoff.md
+session_handoff*.md
+
+# Scratch & Temporary files
+scratch/
+*.tmp
 *.log
+.env*
+.vscode/
+.idea/
+
+# Backups & Old Archives
+assets/model_live2d_backup/
+backup/
+*.bak
